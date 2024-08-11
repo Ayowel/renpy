@@ -83,6 +83,7 @@ cache/
 /jedit
 /atom
 /vscode
+/.vscode/tasks.json
 
 # Generated source.
 /renpy/vc_version.py
