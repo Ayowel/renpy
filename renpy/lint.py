@@ -59,6 +59,7 @@ all_default_statements = {}
 
 # True if at east one error was reported, false otherwise.
 error_reported = False
+problem_reported = False
 
 # Reports a message to the user.
 
@@ -125,6 +126,8 @@ def problem_listing(header, problems):
             for line, message in file_problems:
                 print("    * line {:>5d} {}".format(line, message))
 
+    global problem_reported
+    problem_reported = True
 
 # Tries to evaluate an expression, announcing an error if it fails.
 def try_eval(where, expr, additional=None):
@@ -1061,6 +1064,7 @@ def lint():
     ap.add_argument("filename", nargs='?', action="store", help="The file to write to.")
 
     ap.add_argument("--error-code", action="store_true", help="If given, the error code is 0 if the game has no lint errors, 1 if lint errors are found.")
+    ap.add_argument("--problem-as-error", action="store_true", help="If given with --error-code, problems detections will be treated as errors for the error code's evaluation.")
 
     ap.add_argument("--no-orphan-tl", dest="orphan_tl", action="store_false", help="If not given, orphan translations are reported.")
     ap.add_argument("--reserved-parameters", action="store_true", help="If given, renpy or python reserved names in renpy statement parameters are reported.")
@@ -1303,7 +1307,7 @@ characters per block. """.format(
     print("Lint is not a substitute for thorough testing. Remember to update Ren'Py")
     print("before releasing. New releases fix bugs and improve compatibility.")
 
-    if error_reported and args.error_code:
+    if args.error_code and (error_reported or (problem_reported and args.problem_as_error)):
         renpy.exports.quit(status=1)
 
     return False
